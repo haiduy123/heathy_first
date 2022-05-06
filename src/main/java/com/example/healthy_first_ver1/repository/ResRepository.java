@@ -14,7 +14,7 @@ import java.util.List;
 public interface ResRepository extends JpaRepository<Restaurant, Long> {
 
     // query để lấy ra danh sách các nhà hàng còn thời hạn giấy chứng nhận
-    @Query(value = "select r.name as tenNhaHang, c.id as maChungNhan, datediff(c.end_date, now()) as ngayHetHan\n" +
+    @Query(value = "select r.name as tenNhaHang, c.id as maChungNhan, datediff(c.end_date, now()) as ngayHetHan, r.type as Type\n" +
             "from web_project.certificates c\n" +
             "inner join web_project.restaurants r\n" +
             "on r.cert_id = c.id\n" +

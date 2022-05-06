@@ -54,6 +54,18 @@ public class CertificateImpl implements CertificateService {
     }
 
     @Override
+    public void deleteById(Long id) {
+        Certificate certificate = certRepository.findById(id).get();
+
+        if(ObjectUtils.isEmpty(certificate)) {
+            String mess = "certificate-not-exits";
+            throw new NotFoundException(mess);
+        }
+
+        certRepository.deleteById(id);
+    }
+
+    @Override
     public Certificate save(Certificate certificate) {
         return certRepository.save(certificate);
     }

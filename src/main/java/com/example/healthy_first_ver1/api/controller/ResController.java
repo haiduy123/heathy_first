@@ -3,6 +3,7 @@ package com.example.healthy_first_ver1.api.controller;
 import com.example.healthy_first_ver1.api.form.RestaurantForm;
 import com.example.healthy_first_ver1.api.response.ApiResponse;
 import com.example.healthy_first_ver1.dto.RestaurantDto;
+import com.example.healthy_first_ver1.dto.ResultDto;
 import com.example.healthy_first_ver1.entity.Restaurant;
 import com.example.healthy_first_ver1.repository.result.ResRecommendResult;
 import com.example.healthy_first_ver1.repository.result.ResSafeResult;
@@ -39,6 +40,13 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteRestaurant(@PathVariable("id") long _id) {
+        resService.deleteById(_id);
+        ApiResponse response = ApiResponse.success(null,HttpStatus.OK.value(), "Xóa thành công" + _id);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getResById(@PathVariable("id") Long _id) {
         Restaurant restaurant = resService.getById(_id);
@@ -61,10 +69,23 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/count/safe")
+    @GetMapping("/restaurant/count")
     public ResponseEntity<ApiResponse> countSafeRestaurant() {
-        Long safeRes = resService.countSafeRestaurant();
-        ApiResponse response = ApiResponse.success(safeRes, HttpStatus.OK.value(), "Số lượng nhà hàng an toàn");
+        List<Long> safeRes = resService.countRestaurant();
+        ResultDto dto = new ResultDto();
+        dto.setSafe(safeRes.get(0));
+        dto.setUnsafe(safeRes.get(1));
+        ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Số lượng nhà hàng an toàn");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/production/count")
+    public ResponseEntity<ApiResponse> countSafeProduction() {
+        List<Long> safeProduction = resService.countProduction();
+        ResultDto dto = new ResultDto();
+        dto.setSafe(safeProduction.get(0));
+        dto.setUnsafe(safeProduction.get(1));
+        ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Số lượng cơ sở sản xuất an toàn");
         return ResponseEntity.ok(response);
     }
 

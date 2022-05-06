@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/cert")
 public class CertController {
@@ -32,6 +33,13 @@ public class CertController {
         List<Certificate> certificates = certificateService.getCertList();
         List<CertificateDto> dto = certificates.stream().map(Certificate::toDto).collect(Collectors.toList());
         ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Danh sách các cert");
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteCertificate(@PathVariable("id") long _id) {
+        certificateService.deleteById(_id);
+        ApiResponse response = ApiResponse.success(null,HttpStatus.OK.value(), "Xóa thành công" + _id);
         return ResponseEntity.ok(response);
     }
 

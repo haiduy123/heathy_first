@@ -4,16 +4,41 @@ import com.example.healthy_first_ver1.entity.User;
 import com.example.healthy_first_ver1.repository.UserRepository;
 import com.example.healthy_first_ver1.repository.result.UserResult;
 import com.example.healthy_first_ver1.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+
 @Service
-public class UserServiceImpl implements UserService {
+@RequiredArgsConstructor
+@Transactional
+@Slf4j
+public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public UserResult getUserByLogin(String username, String password) {
         UserResult user = userRepository.getUserByLogin(username, password);
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if(user == null) {
+            throw new UsernameNotFoundException("Not found user");
+        }
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),new ArrayList<>());
     }
 }

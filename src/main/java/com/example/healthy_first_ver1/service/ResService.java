@@ -21,7 +21,11 @@ public interface ResService {
 
     List<ResRecommendResult> getResRecommend();
 
-    Long countSafeRestaurant();
+    List<Long> countRestaurant();
+
+    List<Long> countProduction();
+
+    void deleteById(Long id);
 
     Restaurant save(Restaurant restaurant);
 }

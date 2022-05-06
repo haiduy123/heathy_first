@@ -17,5 +17,5 @@ public class RestaurantDto {
 
     private String type;
 
-    private Long certId;
+    private Certificate cert;
 }

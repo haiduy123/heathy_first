@@ -4,4 +4,5 @@ public interface ResSafeResult {
     String getTenNhaHang();
     Long getMaChungNhan();
     Long getNgayHetHan();
+    String getType();
 }

@@ -10,6 +10,8 @@ public interface CertificateService {
 
     List<Certificate> getCertList();
 
+    void deleteById(Long id);
+
     Certificate getById(Long id);
 
     Certificate save(Certificate certificate);

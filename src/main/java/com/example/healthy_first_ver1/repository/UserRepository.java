@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "where u.username = :username \n" +
             "and u.password = :password", nativeQuery = true)
     UserResult getUserByLogin(String username, String password);
+
+    User findByUsername(String username);
 }

@@ -1,11 +1,16 @@
 package com.example.healthy_first_ver1.entity;
 import com.example.healthy_first_ver1.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Entity
 @Data
@@ -29,6 +34,16 @@ public class User {
 
     @Column
     private String location;
+
+    @ManyToMany(fetch = EAGER)
+    private Collection<Role> roles = new ArrayList<>();
+
+    public  User(Long id, String username, String password, ArrayList<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
 
 
     public UserDto toDto() {

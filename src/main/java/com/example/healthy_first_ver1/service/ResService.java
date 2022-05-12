@@ -13,6 +13,8 @@ public interface ResService {
 
     Restaurant getById(Long id);
 
+    Restaurant updateRestaurant(Long id, String name, String address, String phone);
+
     List<Restaurant> getRestaurantList();
 
     List<ResSafeResult> getRestaurantSafe();

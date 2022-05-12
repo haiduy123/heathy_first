@@ -43,6 +43,20 @@ public class CertificateImpl implements CertificateService {
     }
 
     @Override
+    public Certificate updateCertificate(Long id, LocalDate endDate) {
+        Certificate certificate = certRepository.findById(id).get();
+
+        if(ObjectUtils.isEmpty(certificate)) {
+            String mess = "certificate-not-exits";
+            throw new NotFoundException(mess);
+        }
+
+        certificate.setEndDate(endDate);
+
+        return save(certificate);
+    }
+
+    @Override
     public Certificate getById(Long id) {
         Certificate certificate = certRepository.findById(id).get();
 

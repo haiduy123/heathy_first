@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//@CrossOrigin
 @RestController
 @RequestMapping("/res")
-@CrossOrigin
 public class ResController {
     @Autowired
     ResService resService;
@@ -93,6 +93,14 @@ public class ResController {
     public ResponseEntity<ApiResponse> getRestaurantRecommend() {
         List<ResRecommendResult> restaurants = resService.getResRecommend();
         ApiResponse response = ApiResponse.success(restaurants, HttpStatus.OK.value(), "Danh sách các cơ sở caafn kieerm tra");
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateRestaurant(@PathVariable("id") Long _id, @RequestBody RestaurantForm _form) {
+        Restaurant restaurant = resService.updateRestaurant(_id, _form.getName(), _form.getAddress(), _form.getPhone());
+        RestaurantDto dto = restaurant.toDto();
+        ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Cập nhật thành công");
         return ResponseEntity.ok(response);
     }
 }

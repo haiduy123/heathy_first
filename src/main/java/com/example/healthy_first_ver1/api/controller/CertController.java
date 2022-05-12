@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,14 @@ public class CertController {
         Certificate cert = certificateService.getById(_id);
         CertificateDto dto = cert.toDto();
         ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Certificate :");
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateCertificate(@PathVariable("id") Long _id, @RequestBody LocalDate _endDate) {
+        Certificate certificate = certificateService.updateCertificate(_id, _endDate);
+        CertificateDto dto = certificate.toDto();
+        ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Cập nhật thành công");
         return ResponseEntity.ok(response);
     }
 }

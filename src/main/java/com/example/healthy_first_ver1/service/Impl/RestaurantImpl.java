@@ -58,6 +58,22 @@ public class RestaurantImpl implements ResService {
         return restaurant;
     }
 
+    @Override
+    public Restaurant updateRestaurant(Long id, String name, String address, String phone) {
+        Restaurant restaurant = resRepository.findById(id).get();
+
+        if(ObjectUtils.isEmpty(restaurant)) {
+            String mess = "restaurant-not-exits";
+            throw new NotFoundException(mess);
+        }
+
+        restaurant.setAddress(address);
+        restaurant.setName(name);
+        restaurant.setPhone(phone);
+
+        return save(restaurant);
+    }
+
     // lấy danh sách tất cả cơ sở
     @Override
     public List<Restaurant> getRestaurantList() {

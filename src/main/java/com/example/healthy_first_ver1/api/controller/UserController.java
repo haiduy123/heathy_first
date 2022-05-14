@@ -4,7 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.healthy_first_ver1.dto.UserDto;
 import com.example.healthy_first_ver1.entity.Role;
+import com.example.healthy_first_ver1.filter.CustomAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.healthy_first_ver1.api.form.CertificateForm;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +44,21 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    CustomAuthenticationFilter customAuthenticationFilter;
+
     @PostMapping
     public ResponseEntity<ApiResponse> addCert(@RequestBody UserForm _form) {
         User user = userService.addNewUser(_form);
         ApiResponse response = ApiResponse.success(user, HttpStatus.OK.value(), "Thêm user thành công");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<ApiResponse> getUserDetail() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByName(username);
+        UserDto dto = user.toDto();
+        ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "User Detail");
         return ResponseEntity.ok(response);
     }
 

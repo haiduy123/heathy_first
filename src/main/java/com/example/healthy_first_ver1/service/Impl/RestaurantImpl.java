@@ -26,6 +26,7 @@ public class RestaurantImpl implements ResService {
     @Autowired
     CertRepository certRepository;
 
+
     @Override
     public Restaurant addNewRes(RestaurantForm form) {
         Restaurant restaurant = Restaurant.builder()
@@ -35,13 +36,15 @@ public class RestaurantImpl implements ResService {
                 .type(form.getType())
                 .build();
 
-        Certificate certificate = certRepository.findById(form.getCertId()).get();
-        if(ObjectUtils.isEmpty(certificate)) {
-            restaurant.setCert(null);
-        }
-        else {
-            restaurant.setCert(certificate);
-        }
+        /** neu certId de trong thi nghia la chua duoc cap cert
+         * set certId = 0
+         */
+//        if (ObjectUtils.isEmpty(form.getCertId())) {
+//            restaurant.setCert_id(Long.valueOf(0));
+//        } else {
+//            restaurant.setCert_id(form.getCertId());
+//        }
+        restaurant.setCert_id(Long.valueOf(0));
         return save(restaurant);
     }
 
@@ -49,7 +52,7 @@ public class RestaurantImpl implements ResService {
     @Override
     public Restaurant getById(Long id) {
         Restaurant restaurant = resRepository.findById(id).get();
-        checkCertificate(restaurant);
+//        checkCertificate(restaurant);
         if(ObjectUtils.isEmpty(restaurant)) {
             String mess = "restaurant-not-exits";
             throw new NotFoundException(mess);
@@ -167,12 +170,4 @@ public class RestaurantImpl implements ResService {
         return resRepository.save(restaurant);
     }
 
-    public boolean checkCertificate(Restaurant restaurant) {
-        if(ObjectUtils.isEmpty(restaurant.getCert())) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
 }

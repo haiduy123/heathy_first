@@ -47,7 +47,7 @@ public class UserController {
     CustomAuthenticationFilter customAuthenticationFilter;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> addCert(@RequestBody UserForm _form) {
+    public ResponseEntity<ApiResponse> addUser(@RequestBody UserForm _form) {
         User user = userService.addNewUser(_form);
         ApiResponse response = ApiResponse.success(user, HttpStatus.OK.value(), "Thêm user thành công");
         return ResponseEntity.ok(response);

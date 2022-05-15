@@ -12,5 +12,7 @@ public class RestaurantForm {
 
     private String type;
 
+    private String district;
+
     private Long certId;
 }

@@ -27,9 +27,6 @@ public class Certificate {
     @Column
     private LocalDate endDate;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "cert")
-    private Restaurant restaurant;
 
     public CertificateDto toDto() {
         return CertificateDto.builder()

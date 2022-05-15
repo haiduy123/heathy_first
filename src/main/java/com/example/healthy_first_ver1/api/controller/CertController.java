@@ -4,10 +4,14 @@ import com.example.healthy_first_ver1.api.form.CertificateForm;
 import com.example.healthy_first_ver1.api.response.ApiResponse;
 import com.example.healthy_first_ver1.dto.CertificateDto;
 import com.example.healthy_first_ver1.entity.Certificate;
+import com.example.healthy_first_ver1.entity.Restaurant;
+import com.example.healthy_first_ver1.repository.ResRepository;
 import com.example.healthy_first_ver1.service.CertificateService;
+import com.example.healthy_first_ver1.service.ResService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,6 +24,12 @@ import java.util.stream.Collectors;
 public class CertController {
     @Autowired
     CertificateService certificateService;
+
+    @Autowired
+    ResService resService;
+
+    @Autowired
+    ResRepository resRepository;
 
     @PostMapping
     public ResponseEntity<ApiResponse> addCert(@RequestBody CertificateForm _form) {
@@ -38,7 +48,19 @@ public class CertController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteCertificate(@PathVariable("id") long _id) {
+    public ResponseEntity<ApiResponse> deleteCertificate(@PathVariable("id") Long _id) {
+        List<Restaurant> restaurants = resRepository.findAll();
+
+        /** tim trong list restaurant
+         * neu xoa cert id thi cert id trong restaurant se = null
+         */
+
+        restaurants.forEach(restaurant -> {
+            if (ObjectUtils.isEmpty(restaurant.getCert_id()) && restaurant.getCert_id().equals(_id)) {
+                restaurant.setCert_id(null);
+            }
+        });
+
         certificateService.deleteById(_id);
         ApiResponse response = ApiResponse.success(null,HttpStatus.OK.value(), "Xóa thành công" + _id);
         return ResponseEntity.ok(response);

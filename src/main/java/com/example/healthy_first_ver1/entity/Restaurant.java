@@ -32,10 +32,11 @@ public class Restaurant {
     @Column
     private String type;
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cert_id", referencedColumnName = "id")
-    private Certificate cert;
+    @Column
+    private String district;
+
+    @Column
+    private Long cert_id;
 
     public RestaurantDto toDto() {
         return RestaurantDto.builder()
@@ -44,7 +45,8 @@ public class Restaurant {
                 .address(address)
                 .phone(phone)
                 .type(type)
-                .cert(cert)
+                .district(district)
+                .cert_id(cert_id)
                 .build();
     }
 }

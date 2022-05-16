@@ -56,7 +56,7 @@ public class CertController {
          */
 
         restaurants.forEach(restaurant -> {
-            if (ObjectUtils.isEmpty(restaurant.getCert_id()) && restaurant.getCert_id().equals(_id)) {
+            if (!ObjectUtils.isEmpty(restaurant.getCert_id()) && restaurant.getCert_id().equals(_id)) {
                 restaurant.setCert_id(null);
             }
         });

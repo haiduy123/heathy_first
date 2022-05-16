@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .location(form.getLocation())
                 .position(form.getPosition())
                 .build();
-        return userRepository.save(user);
+        return saveUser(user);
     }
 
     @Override

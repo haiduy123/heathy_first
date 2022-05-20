@@ -2,6 +2,7 @@ package com.example.healthy_first_ver1.api.controller;
 
 import com.example.healthy_first_ver1.api.form.CertificateForm;
 import com.example.healthy_first_ver1.api.response.ApiResponse;
+import com.example.healthy_first_ver1.dto.CertResultDto;
 import com.example.healthy_first_ver1.dto.CertificateDto;
 import com.example.healthy_first_ver1.entity.Certificate;
 import com.example.healthy_first_ver1.entity.Restaurant;
@@ -71,6 +72,13 @@ public class CertController {
         Certificate cert = certificateService.getById(_id);
         CertificateDto dto = cert.toDto();
         ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Certificate :");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/location")
+    public ResponseEntity<ApiResponse> getCertLocation() {
+        CertResultDto cert = certificateService.getCertLocation();
+        ApiResponse response = ApiResponse.success(cert, HttpStatus.OK.value(), "Certificate :");
         return ResponseEntity.ok(response);
     }
 

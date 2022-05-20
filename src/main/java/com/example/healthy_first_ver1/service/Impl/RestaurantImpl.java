@@ -1,8 +1,8 @@
 package com.example.healthy_first_ver1.service.Impl;
 
 import com.example.healthy_first_ver1.api.form.RestaurantForm;
-import com.example.healthy_first_ver1.entity.Certificate;
 import com.example.healthy_first_ver1.entity.Restaurant;
+import com.example.healthy_first_ver1.entity.Role;
 import com.example.healthy_first_ver1.exception.NotFoundException;
 import com.example.healthy_first_ver1.repository.CertRepository;
 import com.example.healthy_first_ver1.repository.ResRepository;
@@ -10,13 +10,13 @@ import com.example.healthy_first_ver1.repository.result.ResRecommendResult;
 import com.example.healthy_first_ver1.repository.result.ResSafeResult;
 import com.example.healthy_first_ver1.repository.result.ResUnsafeResult;
 import com.example.healthy_first_ver1.service.ResService;
+import com.example.healthy_first_ver1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class RestaurantImpl implements ResService {
@@ -26,6 +26,8 @@ public class RestaurantImpl implements ResService {
     @Autowired
     CertRepository certRepository;
 
+    @Autowired
+    UserService userService;
 
     @Override
     public Restaurant addNewRes(RestaurantForm form) {
@@ -34,17 +36,18 @@ public class RestaurantImpl implements ResService {
                 .address(form.getAddress())
                 .phone(form.getPhone())
                 .type(form.getType())
+                .district(form.getDistrict())
                 .build();
 
         /** neu certId de trong thi nghia la chua duoc cap cert
          * set certId = 0
          */
-//        if (ObjectUtils.isEmpty(form.getCertId())) {
-//            restaurant.setCert_id(Long.valueOf(0));
-//        } else {
-//            restaurant.setCert_id(form.getCertId());
-//        }
-        restaurant.setCert_id(Long.valueOf(0));
+        if (ObjectUtils.isEmpty(form.getCertId())) {
+            restaurant.setCert_id(Long.valueOf(0));
+        } else {
+            restaurant.setCert_id(form.getCertId());
+        }
+
         return save(restaurant);
     }
 
@@ -58,6 +61,12 @@ public class RestaurantImpl implements ResService {
             throw new NotFoundException(mess);
         }
 
+        return restaurant;
+    }
+
+    @Override
+    public Restaurant getByName(String name) {
+        Restaurant restaurant = resRepository.findByName(name);
         return restaurant;
     }
 
@@ -131,18 +140,42 @@ public class RestaurantImpl implements ResService {
     public List<Long> countRestaurant() {
         List<Restaurant> restaurants = new ArrayList<>();
 
-        resRepository.findAll().forEach((item -> {
-            if(item.getType().equals("Restaurant")) restaurants.add(item);
-        }));
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String district = userService.getUserByName(username).getLocation();
+        Collection<Role> roles = userService.getUserByName(username).getRoles();
+        int temp = (int) roles.stream().filter(item -> item.getName().equals("ROLE_ADMIN")).count();
 
-        List<ResSafeResult> safeRestaurants = resRepository.getRestaurantSafe();
-        List<ResSafeResult> results = new ArrayList<>();
-        safeRestaurants.forEach((item) -> {
-            if(item.getType().equals("Restaurant")) results.add(item);
-        });
+        List<ResSafeResult> safeRes = new ArrayList<>();
+
+        if(temp != 0) {
+            resRepository.findAll().forEach((res -> {
+                if(res.getType().equals("Restaurant")) {
+                    restaurants.add(res);
+                }
+            }));
+
+            resRepository.getRestaurantSafe().forEach((item -> {
+                if(item.getType().equals("Restaurant")) {
+                    safeRes.add(item);
+                }
+            }));
+        } else {
+            resRepository.findAll().forEach((item -> {
+                if(item.getType().equals("Restaurant") && item.getDistrict().equals(district)) {
+                    restaurants.add(item);
+                }
+            }));
+
+            resRepository.getRestaurantSafe().forEach((item -> {
+                if(item.getType().equals("Restaurant") && item.getDistrict().equals(district)) {
+                    safeRes.add(item);
+                }
+            }));
+        }
+
         List<Long> count = new ArrayList<>();
-        count.add(Long.valueOf(results.size()));// safe
-        count.add(Long.valueOf(restaurants.size() - results.size())); // unsafe
+        count.add(Long.valueOf(safeRes.size()));// safe
+        count.add(Long.valueOf(restaurants.size() - safeRes.size())); // unsafe
         return count;
     }
 
@@ -150,18 +183,86 @@ public class RestaurantImpl implements ResService {
     public List<Long> countProduction() {
         List<Restaurant> productions = new ArrayList<>();
 
-        resRepository.findAll().forEach((item -> {
-            if(item.getType().equals("Production")) productions.add(item);
-        }));
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String district = userService.getUserByName(username).getLocation();
+        Collection<Role> roles = userService.getUserByName(username).getRoles();
+        int temp = (int) roles.stream().filter(item -> item.getName().equals("ROLE_ADMIN")).count();
 
-        List<ResSafeResult> safeProductions = resRepository.getRestaurantSafe();
-        List<ResSafeResult> results = new ArrayList<>();
-        safeProductions.forEach((item) -> {
-            if(item.getType().equals("Production")) results.add(item);
-        });
+        List<ResSafeResult> safeProduction = new ArrayList<>();
+
+        if(temp != 0) {
+            resRepository.findAll().forEach((res -> {
+                if(res.getType().equals("Production")) {
+                    productions.add(res);
+                }
+            }));
+
+            resRepository.getRestaurantSafe().forEach((item -> {
+                if(item.getType().equals("Production")) {
+                    safeProduction.add(item);
+                }
+            }));
+        } else {
+            resRepository.findAll().forEach((item -> {
+                if(item.getType().equals("Production") && item.getDistrict().equals(district)) {
+                    productions.add(item);
+                }
+            }));
+
+            resRepository.getRestaurantSafe().forEach((item -> {
+                if(item.getType().equals("Production") && item.getDistrict().equals(district)) {
+                    safeProduction.add(item);
+                }
+            }));
+        }
+
         List<Long> count = new ArrayList<>();
-        count.add(Long.valueOf(results.size()));// safe
-        count.add(Long.valueOf(productions.size() - results.size())); // unsafe
+        count.add(Long.valueOf(safeProduction.size()));// safe
+        count.add(Long.valueOf(productions.size() - safeProduction.size())); // unsafe
+        return count;
+    }
+
+    @Override
+    public Map<String, Integer> count() {
+        List<Restaurant> productions = new ArrayList<>();
+        List<Restaurant> restaurants = new ArrayList<>();
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String district = userService.getUserByName(username).getLocation();
+        Collection<Role> roles = userService.getUserByName(username).getRoles();
+        int temp = (int) roles.stream().filter(item -> item.getName().equals("ROLE_ADMIN")).count();
+
+        List<ResSafeResult> safeProduction = new ArrayList<>();
+
+        if(temp != 0) {
+            resRepository.findAll().forEach((res -> {
+                if(res.getType().equals("Production")) {
+                    productions.add(res);
+                }
+            }));
+
+            resRepository.findAll().forEach((res -> {
+                if(res.getType().equals("Restaurant")) {
+                    restaurants.add(res);
+                }
+            }));
+        } else {
+            resRepository.findAll().forEach((item -> {
+                if(item.getType().equals("Production") && item.getDistrict().equals(district)) {
+                    productions.add(item);
+                }
+            }));
+
+            resRepository.findAll().forEach((item -> {
+                if(item.getType().equals("Restaurant") && item.getDistrict().equals(district)) {
+                    restaurants.add(item);
+                }
+            }));
+        }
+
+        Map<String,Integer> count = new HashMap<>();
+        count.put("Restautant",restaurants.size()); // restaurant
+        count.put("Production",productions.size()); // productions
         return count;
     }
 

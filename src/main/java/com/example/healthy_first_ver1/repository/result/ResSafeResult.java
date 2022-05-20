@@ -5,4 +5,5 @@ public interface ResSafeResult {
     Long getMaChungNhan();
     Long getNgayHetHan();
     String getType();
+    String getDistrict();
 }

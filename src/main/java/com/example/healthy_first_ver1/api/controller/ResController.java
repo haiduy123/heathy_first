@@ -16,11 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //@CrossOrigin
@@ -52,6 +54,13 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<ApiResponse> getResByName(@PathVariable("name") String _name) {
+        Restaurant restaurant = resService.getByName(_name);
+        RestaurantDto dto = restaurant.toDto();
+        ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Cơ sở");
+        return ResponseEntity.ok(response);
+    }
     /** Lay danh sach nha hang theo nguoi quan ly
      * Chuyen vien quan ly quan nao thi chi truy cap duoc thong tin quan day
      */
@@ -73,7 +82,7 @@ public class ResController {
         }
         else {
             resService.getRestaurantList().forEach(restaurant -> {
-                if(restaurant.getDistrict().equals(district)) {
+                if(!ObjectUtils.isEmpty(restaurant.getDistrict()) && restaurant.getDistrict().equals(district)) {
                     restaurants.add(restaurant);
                 }
             });
@@ -123,6 +132,13 @@ public class ResController {
     public ResponseEntity<ApiResponse> getResDeleteCert() {
         List<Restaurant> restaurants =  fillterRestaurant.getResDeleteCert();
         ApiResponse response = ApiResponse.success(restaurants, HttpStatus.OK.value(), "Danh sách các cơ sở bị thu hồi giấy chứng nhận");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse> count() {
+        Map<String,Integer> count = resService.count();
+        ApiResponse response = ApiResponse.success(count, HttpStatus.OK.value(), "Số lượng nhà hàng an toàn");
         return ResponseEntity.ok(response);
     }
 

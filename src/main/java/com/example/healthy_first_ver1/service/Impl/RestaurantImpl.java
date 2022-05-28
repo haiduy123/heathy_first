@@ -111,28 +111,72 @@ public class RestaurantImpl implements ResService {
 
     @Override
     public List<ResSafeResult> getRestaurantSafe() {
-        List<ResSafeResult> restaurants = resRepository.getRestaurantSafe();
-        if(ObjectUtils.isEmpty(restaurants)) {
-            return Collections.EMPTY_LIST;
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String district = userService.getUserByName(username).getLocation();
+        Collection<Role> roles = userService.getUserByName(username).getRoles();
+        int temp = (int) roles.stream().filter(item -> item.getName().equals("ROLE_ADMIN")).count();
+
+        List<ResSafeResult> safeRes = new ArrayList<>();
+
+        if(temp != 0) {
+            resRepository.getRestaurantSafe().forEach((res -> {
+                safeRes.add(res);
+            }));
+        } else {
+            resRepository.getRestaurantSafe().forEach((item -> {
+                if(item.getDistrict().equals(district)) {
+                    safeRes.add(item);
+                }
+            }));
         }
-        return restaurants;
+
+        return safeRes;
     }
 
     @Override
     public List<ResUnsafeResult> getRestaurantUnsafe() {
-        List<ResUnsafeResult> restaurants = resRepository.getRestaurantUnsafe();
-        if(ObjectUtils.isEmpty(restaurants)) {
-            return Collections.EMPTY_LIST;
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String district = userService.getUserByName(username).getLocation();
+        Collection<Role> roles = userService.getUserByName(username).getRoles();
+        int temp = (int) roles.stream().filter(item -> item.getName().equals("ROLE_ADMIN")).count();
+
+        List<ResUnsafeResult> unsafeRes = new ArrayList<>();
+
+
+        if(temp != 0) {
+            resRepository.getRestaurantUnsafe().forEach((res -> {
+                unsafeRes.add(res);
+            }));
+        } else {
+            resRepository.getRestaurantUnsafe().forEach((item -> {
+                if(item.getDistrict().equals(district)) {
+                    unsafeRes.add(item);
+                }
+            }));
         }
-        return restaurants;
+        return unsafeRes;
     }
 
     @Override
     public List<ResRecommendResult> getResRecommend() {
-        List<ResRecommendResult> restaurants = resRepository.getRestaurantRecommend();
-        if(ObjectUtils.isEmpty(restaurants)) {
-            return Collections.EMPTY_LIST;
+        List<ResRecommendResult> restaurants = new ArrayList<>();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String district = userService.getUserByName(username).getLocation();
+        Collection<Role> roles = userService.getUserByName(username).getRoles();
+        int temp = (int) roles.stream().filter(item -> item.getName().equals("ROLE_ADMIN")).count();
+
+        if(temp != 0) {
+            resRepository.getRestaurantRecommend().forEach((res -> {
+                restaurants.add(res);
+            }));
+        } else {
+            resRepository.getRestaurantRecommend().forEach((item -> {
+                if(item.getDistrict().equals(district)) {
+                    restaurants.add(item);
+                }
+            }));
         }
+
         return restaurants;
     }
 

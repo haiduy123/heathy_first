@@ -22,14 +22,14 @@ public interface ResRepository extends JpaRepository<Restaurant, Long> {
     List<ResSafeResult> getRestaurantSafe();
 
     // query để lấy ra danh sách các nhà hàng hết hạn giấy chứng nhận
-    @Query(value = "select r.name as tenNhaHang, c.id as maChungNhan, c.end_date as ngayHetHan\n" +
+    @Query(value = "select r.name as tenNhaHang, c.id as maChungNhan, c.end_date as ngayHetHan, r.type as Type, r.district as District\n" +
             "from web_project.certificates c\n" +
             "join web_project.restaurants r\n" +
             "on r.cert_id = c.id\n" +
             "where c.end_date < now()", nativeQuery = true)
     List<ResUnsafeResult> getRestaurantUnsafe();
 
-    @Query(value = "select r.name as tenNhaHang, c.id as maChungNhan, datediff(c.end_date, now()) as ngayHetHan\n" +
+    @Query(value = "select r.name as tenNhaHang, c.id as maChungNhan, r.type as Type, r.district as District, datediff(c.end_date, now()) as ngayHetHan\n" +
             "from web_project.certificates c\n" +
             "join web_project.restaurants r\n" +
             "on r.cert_id = c.id\n" +

@@ -54,6 +54,7 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    // tìm theo tên
     @GetMapping("/name/{name}")
     public ResponseEntity<ApiResponse> getResByName(@PathVariable("name") String _name) {
         Restaurant restaurant = resService.getByName(_name);
@@ -61,6 +62,7 @@ public class ResController {
         ApiResponse response = ApiResponse.success(dto, HttpStatus.OK.value(), "Cơ sở");
         return ResponseEntity.ok(response);
     }
+
     /** Lay danh sach nha hang theo nguoi quan ly
      * Chuyen vien quan ly quan nao thi chi truy cap duoc thong tin quan day
      */
@@ -119,6 +121,7 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    // lấy ra cơ sở chưa có cert
     @GetMapping("/nocert")
     public ResponseEntity<ApiResponse> getResNoCert() {
         List<Restaurant> restaurants =  fillterRestaurant.getResNoCert();
@@ -135,6 +138,7 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    // đếm restaurant và production
     @GetMapping("/count")
     public ResponseEntity<ApiResponse> count() {
         Map<String,Integer> count = resService.count();
@@ -142,6 +146,7 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    // đếm số restaurant an toàn với ko an toàn
     @GetMapping("/restaurant/count")
     public ResponseEntity<ApiResponse> countSafeRestaurant() {
         List<Long> safeRes = resService.countRestaurant();
@@ -152,6 +157,7 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    // đếm số production an toàn và ko an toàn
     @GetMapping("/production/count")
     public ResponseEntity<ApiResponse> countSafeProduction() {
         List<Long> safeProduction = resService.countProduction();
@@ -162,10 +168,11 @@ public class ResController {
         return ResponseEntity.ok(response);
     }
 
+    // APi trả về các cơ sở cần được kiểm tra
     @GetMapping("/recommend")
     public ResponseEntity<ApiResponse> getRestaurantRecommend() {
         List<ResRecommendResult> restaurants = resService.getResRecommend();
-        ApiResponse response = ApiResponse.success(restaurants, HttpStatus.OK.value(), "Danh sách các cơ sở caafn kieerm tra");
+        ApiResponse response = ApiResponse.success(restaurants, HttpStatus.OK.value(), "Danh sách các cơ sở cần kiểm tra");
         return ResponseEntity.ok(response);
     }
 

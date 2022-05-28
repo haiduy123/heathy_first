@@ -20,4 +20,8 @@ public class RestaurantDto {
     private String district;
 
     private Long cert_id;
+
+//    private String image;
+//
+//    private String time;
 }

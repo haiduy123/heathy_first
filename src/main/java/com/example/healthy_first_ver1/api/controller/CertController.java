@@ -75,6 +75,7 @@ public class CertController {
         return ResponseEntity.ok(response);
     }
 
+    // lấy ra cert thuộc location
     @GetMapping("/location")
     public ResponseEntity<ApiResponse> getCertLocation() {
         CertResultDto cert = certificateService.getCertLocation();

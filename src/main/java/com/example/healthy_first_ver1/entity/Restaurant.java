@@ -38,6 +38,12 @@ public class Restaurant {
     @Column
     private Long cert_id;
 
+//    @Column
+//    private String image;
+//
+//    @Column
+//    private String time;
+
     public RestaurantDto toDto() {
         return RestaurantDto.builder()
                 .id(id)
@@ -47,6 +53,8 @@ public class Restaurant {
                 .type(type)
                 .district(district)
                 .cert_id(cert_id)
+//                .image(image)
+//                .time(time)
                 .build();
     }
 }

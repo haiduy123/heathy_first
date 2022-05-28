@@ -6,4 +6,6 @@ public interface ResUnsafeResult {
     String getTenNhaHang();
     Long getMaChungNhan();
     LocalDate getNgayHetHan();
+    String getType();
+    String getDistrict();
 }

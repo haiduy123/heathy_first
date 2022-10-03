@@ -12,12 +12,18 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "roles")
-public class Role {
+@Table(name = "candidate")
+public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column (name = "file_cv")
+    private String fileCv;
+
     @Column
     private String name;
+
+    @Column (name = "username")
+    private String username;
 }

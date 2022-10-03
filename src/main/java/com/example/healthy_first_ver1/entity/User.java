@@ -1,5 +1,4 @@
 package com.example.healthy_first_ver1.entity;
-import com.example.healthy_first_ver1.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,12 +28,6 @@ public class User {
     @Column
     private String password;
 
-    @Column
-    private String position;
-
-    @Column
-    private String location;
-
     @ManyToMany(fetch = EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
@@ -43,16 +36,5 @@ public class User {
         this.username = username;
         this.password = password;
         this.roles = roles;
-    }
-
-
-    public UserDto toDto() {
-        return UserDto.builder()
-                .id(id)
-                .username(username)
-                .password(password)
-                .position(position)
-                .location(location)
-                .build();
     }
 }

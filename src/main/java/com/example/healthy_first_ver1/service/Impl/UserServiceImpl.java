@@ -1,8 +1,12 @@
 package com.example.healthy_first_ver1.service.Impl;
 
 import com.example.healthy_first_ver1.api.form.UserForm;
+import com.example.healthy_first_ver1.entity.Candidate;
+import com.example.healthy_first_ver1.entity.Company;
 import com.example.healthy_first_ver1.entity.Role;
 import com.example.healthy_first_ver1.entity.User;
+import com.example.healthy_first_ver1.repository.CandidateRepository;
+import com.example.healthy_first_ver1.repository.CompanyRepository;
 import com.example.healthy_first_ver1.repository.RoleRepository;
 import com.example.healthy_first_ver1.repository.UserRepository;
 import com.example.healthy_first_ver1.repository.result.UserResult;
@@ -20,7 +24,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,12 @@ import java.util.Collections;
 public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CandidateRepository candidateRepository;
+
+    @Autowired
+    CompanyRepository companyRepository;
 
     @Autowired
     RoleRepository roleRepository;
@@ -48,13 +57,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User addNewUser(UserForm form) {
-        User user = User.builder()
-                .username(form.getUsername())
-                .password(passwordEncoder.encode(form.getPassword()))
-                .location(form.getLocation())
-                .position(form.getPosition())
-                .build();
+    public User addNewCandidate(User user) {
+        Candidate candidate = new Candidate();
+        candidate.setUsername(user.getUsername());
+
+        User new_user = new User();
+        new_user.setPassword(passwordEncoder.encode(user.getPassword()));
+        new_user.setUsername(user.getUsername());
+        new_user.setId(user.getId());
+
+        candidateRepository.save(candidate);
+        return saveUser(user);
+    }
+
+    @Override
+    public User addNewCompany(User user) {
+        Company company = new Company();
+        company.setUsername(user.getUsername());
+
+        User new_user = new User();
+        new_user.setPassword(passwordEncoder.encode(user.getPassword()));
+        new_user.setUsername(user.getUsername());
+        new_user.setId(user.getId());
+
+        companyRepository.save(company);
         return saveUser(user);
     }
 

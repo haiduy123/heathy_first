@@ -11,5 +11,6 @@ public interface UserService {
     User saveUser(User user);
     Role saveRole(Role role);
     User getUserByName(String username);
-    User addNewUser(UserForm form);
+    User addNewCandidate(User user);
+    User addNewCompany(User user);
 }

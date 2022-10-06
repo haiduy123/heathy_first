@@ -2,6 +2,12 @@ package com.example.healthy_first_ver1.api.controller;
 
 
 import com.example.healthy_first_ver1.api.response.ApiResponse;
+import com.example.healthy_first_ver1.entity.Candidate;
+import com.example.healthy_first_ver1.entity.Candidate_News;
+import com.example.healthy_first_ver1.entity.Company;
+import com.example.healthy_first_ver1.repository.CandidateRepository;
+import com.example.healthy_first_ver1.repository.Candidate_NewsRepository;
+import com.example.healthy_first_ver1.repository.CompanyRepository;
 import com.example.healthy_first_ver1.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +38,14 @@ public class CandidateController {
     @Autowired
     private CandidateService candidateService;
 
+    @Autowired
+    private CandidateRepository candidateRepository;
+
+    @Autowired
+    private Candidate_NewsRepository candidate_newsRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam MultipartFile file) {
@@ -43,8 +58,12 @@ public class CandidateController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(fileInputPath);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long can_id = Long.valueOf(candidateRepository.getCandidateId(username));
+        Candidate candidate = candidateRepository.findById(can_id).get();
+        candidate.setFileCv(fileName);
+        candidateRepository.save(candidate);
+        return ResponseEntity.status(HttpStatus.OK).body(candidate);
     }
 
     @GetMapping ("/download")
@@ -73,6 +92,17 @@ public class CandidateController {
         List<Object> results = candidateService.searchJob(address,salary,position);
         ApiResponse response = ApiResponse.success(results, HttpStatus.OK.value(), "Danh sách thông tin tuyển dụng");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/apply/{news_id}")
+    public ResponseEntity<?>applyJob(@PathVariable("news_id") Long news_id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long can_id = Long.valueOf(candidateRepository.getCandidateId(username));
+        Candidate_News candidate_news = new Candidate_News();
+        candidate_news.setIdCandidate(can_id);
+        candidate_news.setIdNews(news_id);
+        candidate_newsRepository.save(candidate_news);
+        return ResponseEntity.ok().build();
     }
 }
 

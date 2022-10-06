@@ -27,4 +27,8 @@ public interface CompanyRepository extends CrudRepository<Company,Long> {
     @Query (value = "select name from ooad.company c\n" +
             "where c.username = :username", nativeQuery = true)
     String getCompanyName(String username);
+
+    @Query (value = "select id from ooad.company c\n" +
+            "where c.username = :username", nativeQuery = true)
+    String getCompanyId(String username);
 }

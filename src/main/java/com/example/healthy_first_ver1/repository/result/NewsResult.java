@@ -8,4 +8,5 @@ public interface NewsResult {
     Long getDayLeft();
     String getCompanyName();
     String getIntroduce();
+    String getTitle();
 }

@@ -85,6 +85,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User addNewAdmin(User user) {
+        User new_user = new User();
+        new_user.setPassword(passwordEncoder.encode(user.getPassword()));
+        new_user.setUsername(user.getUsername());
+        return userRepository.save(new_user);
+    }
+
+    @Override
     public User saveUser(User user) {
         user.setUsername(user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));

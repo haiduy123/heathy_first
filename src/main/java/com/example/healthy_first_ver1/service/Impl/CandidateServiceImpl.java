@@ -2,6 +2,7 @@ package com.example.healthy_first_ver1.service.Impl;
 
 
 import com.example.healthy_first_ver1.repository.CandidateRepository;
+import com.example.healthy_first_ver1.repository.result.NewsResult;
 import com.example.healthy_first_ver1.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,8 +62,8 @@ public class CandidateServiceImpl implements CandidateService {
         List<Object[]> lstObj = new ArrayList<>();
         List<Object> results = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT n.id,n.salary, n.position, c.address, datediff(n.end_date,now()) as dayleft, c.name, c.introduce\n" +
-                "FROM ooad_topcv.news n \n" +
-                "left join ooad_topcv.company c\n" +
+                "FROM ooad.news n \n" +
+                "left join ooad.company c\n" +
                 "on n.id_company = c.id\n" +
                 "where position like concat ('%"+
                 position + "%') ");
@@ -105,6 +106,12 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         return results;
+    }
+
+    @Override
+    public List<NewsResult> getCandidateNews(Long id) {
+        List<NewsResult> rs = candidateRepository.getCandidateNews(id);
+        return rs;
     }
 
     public static String getSafeFileName(String input) {

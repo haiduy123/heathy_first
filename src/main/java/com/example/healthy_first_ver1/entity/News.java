@@ -36,4 +36,7 @@ public class News {
 
     @Column
     private String position;
+
+    @Column
+    private String title;
 }

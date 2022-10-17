@@ -8,6 +8,7 @@ import com.example.healthy_first_ver1.entity.Company;
 import com.example.healthy_first_ver1.repository.CandidateRepository;
 import com.example.healthy_first_ver1.repository.Candidate_NewsRepository;
 import com.example.healthy_first_ver1.repository.CompanyRepository;
+import com.example.healthy_first_ver1.repository.result.NewsResult;
 import com.example.healthy_first_ver1.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -94,6 +95,7 @@ public class CandidateController {
         return ResponseEntity.ok(response);
     }
 
+    // đăng nhập candidate ứng tuyển vào cty -> đăng nhập cty hiện ra thông tin candidate
     @PostMapping("/apply/{news_id}")
     public ResponseEntity<?>applyJob(@PathVariable("news_id") Long news_id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -103,6 +105,15 @@ public class CandidateController {
         candidate_news.setIdNews(news_id);
         candidate_newsRepository.save(candidate_news);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/news")
+    public ResponseEntity<?>getCandidateNews() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long id = Long.valueOf(candidateRepository.getCandidateId(username));
+        List<NewsResult> results = candidateService.getCandidateNews(id);
+        ApiResponse response = ApiResponse.success(results, HttpStatus.OK.value(), "Danh sách thông tin tuyển dụng");
+        return ResponseEntity.ok(response);
     }
 }
 

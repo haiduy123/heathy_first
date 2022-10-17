@@ -26,26 +26,26 @@ public class HealthyFirstVer1Application {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    CommandLineRunner run(UserService userService) {
-//        return args -> {
+    @Bean
+    CommandLineRunner run(UserService userService) {
+        return args -> {
 //            userService.saveRole(new Role(null, "ROLE_USER"));
 //            userService.saveRole(new Role(null, "ROLE_MANAGER"));
 //            userService.saveRole(new Role(null, "ROLE_ADMIN"));
 //            userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
-//
+
 //            userService.addNewCandidate(new User(null, "john", "1234", new ArrayList<>()));
 //            userService.addNewCandidate(new User(null, "will", "1234", new ArrayList<>()));
 //            userService.addNewCandidate(new User(null, "jim", "1234", new ArrayList<>()));
 //            userService.addNewCandidate(new User(null, "arnold", "1234", new ArrayList<>()));
-//
-//            userService.addNewCompany(new User(null, "cty1", "1234", new ArrayList<>()));
-//            userService.addNewCompany(new User(null, "cty2", "1234", new ArrayList<>()));
+
+//            userService.addNewAdmin(new User(null, "admin1", "1234", new ArrayList<>()));
+//            userService.addNewAdmin(new User(null, "admin2", "1234", new ArrayList<>()));
 //            userService.addNewCompany(new User(null, "cty3", "1234", new ArrayList<>()));
 //            userService.addNewCompany(new User(null, "cty4", "1234", new ArrayList<>()));
 //
-//            userService.addRoleToUser("john", "ROLE_USER");
-//            userService.addRoleToUser("will", "ROLE_USER");
+//            userService.addRoleToUser("admin1", "ROLE_ADMIN");
+//            userService.addRoleToUser("admin2", "ROLE_ADMIN");
 //            userService.addRoleToUser("jim", "ROLE_USER");
 //            userService.addRoleToUser("arnold", "ROLE_USER");
 //
@@ -53,9 +53,9 @@ public class HealthyFirstVer1Application {
 //            userService.addRoleToUser("cty2", "ROLE_MANAGER");
 //            userService.addRoleToUser("cty3", "ROLE_MANAGER");
 //            userService.addRoleToUser("cty4", "ROLE_MANAGER");
-//
-//        };
-//    }
+
+        };
+    }
 
 //    @Bean
 //    CorsConfigurationSource corsConfigurationSource() {

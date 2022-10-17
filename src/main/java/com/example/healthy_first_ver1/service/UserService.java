@@ -13,4 +13,5 @@ public interface UserService {
     User getUserByName(String username);
     User addNewCandidate(User user);
     User addNewCompany(User user);
+    User addNewAdmin(User user);
 }

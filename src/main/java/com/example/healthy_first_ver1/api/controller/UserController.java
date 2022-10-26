@@ -6,9 +6,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.healthy_first_ver1.entity.Role;
 import com.example.healthy_first_ver1.filter.CustomAuthenticationFilter;
+import com.example.healthy_first_ver1.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.healthy_first_ver1.api.form.RoleToUserForm;
-import com.example.healthy_first_ver1.api.form.UserForm;
 import com.example.healthy_first_ver1.api.response.ApiResponse;
 import com.example.healthy_first_ver1.entity.User;
 import com.example.healthy_first_ver1.service.UserService;
@@ -24,7 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -37,13 +39,26 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserRepository userRepository;
+
     CustomAuthenticationFilter customAuthenticationFilter;
 
     @PostMapping
     public ResponseEntity<ApiResponse> addUser(@RequestBody User user) {
-        User new_user = userService.addNewCandidate(user);
-        ApiResponse response = ApiResponse.success(new_user, HttpStatus.OK.value(), "Thêm user thành công");
-        return ResponseEntity.ok(response);
+        List<String> listUsername = userRepository.getListUsername();
+        AtomicBoolean check = new AtomicBoolean(true);
+        listUsername.forEach(username -> {
+            if(username.equals(user.getUsername())) check.set(false);
+        });
+        if(!check.get()) {
+            ApiResponse response = ApiResponse.success(null, HttpStatus.FAILED_DEPENDENCY.value(), "Username đã tồn tại");
+            return ResponseEntity.ok(response);
+        } else {
+            User new_user = userService.addNewCandidate(user);
+            ApiResponse response = ApiResponse.success(new_user, HttpStatus.OK.value(), "Thêm user thành công");
+            return ResponseEntity.ok(response);
+        }
     }
 
     @PostMapping("/role/addtouser")

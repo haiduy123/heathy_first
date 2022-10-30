@@ -24,4 +24,10 @@ public class Candidate {
 
     @Column (name = "username")
     private String username;
+
+    @Column (name = "phone")
+    private String phone;
+
+    @Column (name = "email")
+    private String email;
 }

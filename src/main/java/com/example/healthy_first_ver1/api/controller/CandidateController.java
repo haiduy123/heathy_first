@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -100,11 +101,16 @@ public class CandidateController {
     public ResponseEntity<?>applyJob(@PathVariable("news_id") Long news_id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long can_id = Long.valueOf(candidateRepository.getCandidateId(username));
-        Candidate_News candidate_news = new Candidate_News();
-        candidate_news.setIdCandidate(can_id);
-        candidate_news.setIdNews(news_id);
-        candidate_newsRepository.save(candidate_news);
-        return ResponseEntity.ok().build();
+        if (!ObjectUtils.isEmpty(candidate_newsRepository.checkCandidateApply(can_id,news_id))) {
+            ApiResponse response = ApiResponse.success(null, HttpStatus.BAD_REQUEST.value(), "Đã ứng tuyển vị trí này");
+            return ResponseEntity.ok(response);
+        } else {
+            Candidate_News candidate_news = new Candidate_News();
+            candidate_news.setIdCandidate(can_id);
+            candidate_news.setIdNews(news_id);
+            candidate_newsRepository.save(candidate_news);
+            return ResponseEntity.ok().build();
+        }
     }
 
     @GetMapping("/news")

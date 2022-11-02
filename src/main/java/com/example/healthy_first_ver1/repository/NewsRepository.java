@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface NewsRepository extends CrudRepository<News, Long> {
-    @Query(value = "SELECT n.id as id,n.salary as salary, n.position as position, n.title, c.address as address, datediff(n.end_date,now()) as dayLeft, c.name as companyName, c.introduce as introduce\n" +
+    @Query(value = "SELECT n.id as id,n.salary as salary, n.position as position, n.title, c.address as address, datediff(now(),n.end_date) as dayLeft, c.name as companyName, c.introduce as introduce\n" +
             "FROM ooad.news n \n" +
             "left join ooad.company c\n" +
             "on n.id_company = c.id", nativeQuery = true)

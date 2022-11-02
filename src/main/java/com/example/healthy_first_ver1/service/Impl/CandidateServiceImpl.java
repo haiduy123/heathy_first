@@ -1,12 +1,15 @@
 package com.example.healthy_first_ver1.service.Impl;
 
 
+import com.example.healthy_first_ver1.entity.Candidate;
+import com.example.healthy_first_ver1.entity.Company;
 import com.example.healthy_first_ver1.repository.CandidateRepository;
 import com.example.healthy_first_ver1.repository.result.NewsResult;
 import com.example.healthy_first_ver1.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -112,6 +115,24 @@ public class CandidateServiceImpl implements CandidateService {
     public List<NewsResult> getCandidateNews(Long id) {
         List<NewsResult> rs = candidateRepository.getCandidateNews(id);
         return rs;
+    }
+
+    @Override
+    public Candidate updateCandidate(Long id, Candidate candidate) {
+        Candidate currentCandidate = candidateRepository.findById(id).get();
+        if(!ObjectUtils.isEmpty(candidate.getFileCv())) {
+            currentCandidate.setFileCv(candidate.getFileCv());
+        }
+        if(!ObjectUtils.isEmpty(candidate.getName())) {
+            currentCandidate.setName(candidate.getName());
+        }
+        if(!ObjectUtils.isEmpty(candidate.getPhone())) {
+            currentCandidate.setPhone(candidate.getPhone());
+        }
+        if(!ObjectUtils.isEmpty(candidate.getEmail())) {
+            currentCandidate.setEmail(candidate.getEmail());
+        }
+        return candidateRepository.save(currentCandidate);
     }
 
     public static String getSafeFileName(String input) {

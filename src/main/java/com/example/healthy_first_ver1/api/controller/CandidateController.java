@@ -5,6 +5,7 @@ import com.example.healthy_first_ver1.api.response.ApiResponse;
 import com.example.healthy_first_ver1.entity.Candidate;
 import com.example.healthy_first_ver1.entity.Candidate_News;
 import com.example.healthy_first_ver1.entity.Company;
+import com.example.healthy_first_ver1.entity.Role;
 import com.example.healthy_first_ver1.repository.CandidateRepository;
 import com.example.healthy_first_ver1.repository.Candidate_NewsRepository;
 import com.example.healthy_first_ver1.repository.CompanyRepository;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -48,6 +50,24 @@ public class CandidateController {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @GetMapping
+    public ResponseEntity<?>getCandidate() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long can_id = Long.valueOf(candidateRepository.getCandidateId(username));
+        Candidate candidate = candidateRepository.findById(can_id).get();
+        ApiResponse response = ApiResponse.success(candidate, HttpStatus.OK.value(), "Thông tin ứng viên");
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping()
+    public ResponseEntity<ApiResponse> updateCandidate(@RequestBody Candidate candidate) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long can_id = Long.valueOf(candidateRepository.getCandidateId(username));
+        candidateService.updateCandidate(can_id,candidate);
+        ApiResponse response =  ApiResponse.success(candidateRepository.findById(can_id).get(),HttpStatus.OK.value(), "Thông tin ứng viên");
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam MultipartFile file) {
